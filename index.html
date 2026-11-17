@@ -1,45 +1,255 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6f7f2">
-  <meta name="description" content="A little clarity for your money and your health. Simple finance and fitness calculators, saved on your device.">
-  <title>LifeTracker — Make room for a better everyday</title>
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./src/app.js"></script>
-</head>
-<body>
-  <div class="shell">
-    <header class="masthead">
-      <a class="brand" href="./" aria-label="LifeTracker home"><span class="brand-mark" aria-hidden="true">↗</span>LifeTracker<span class="brand-dot">.</span></a>
-      <div class="header-actions"><span class="local-status" id="save-status" role="status">Stored only on this device</span><button class="button print-button" id="print" type="button"><span aria-hidden="true">↗</span> Print / Save PDF</button></div>
-    </header>
-    <main>
-      <div class="intro"><div><p class="eyebrow">LESS GUESSWORK. MORE LIVING.</p><h1>A little clarity.<br><span>A better everyday.</span></h1><p class="intro-copy">Know your numbers. Make space for what matters.</p></div><div class="intro-note"><span class="tiny-spark" aria-hidden="true">✳</span><p>Small steps today.<br>More freedom tomorrow.</p></div></div>
-      <nav class="workspace-bar" aria-label="Calculator sections"><div class="tabs" role="tablist" aria-label="LifeTracker calculators"><button id="tab-finance" class="tab" type="button" role="tab" aria-selected="true" aria-controls="panel-finance" data-tab="finance"><span aria-hidden="true">↗</span> Finance</button><button id="tab-fitness" class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-fitness" tabindex="-1" data-tab="fitness"><span aria-hidden="true">♡</span> Fitness</button></div><span class="workspace-caption">YOUR LIFE, A LITTLE MORE INTENTIONAL</span></nav>
-      <section id="panel-finance" class="panel" role="tabpanel" aria-labelledby="tab-finance">
-        <div class="section-heading"><div><p class="eyebrow">01 / MONEY & FREEDOM</p><h2>Give your money a direction.</h2></div><p>A few simple numbers.<br>A clearer picture of your future.</p></div>
-        <div class="calculator-layout">
-          <aside class="input-card"><span class="card-kicker">THE STARTING POINT</span><h3>What comes in?</h3><p class="muted">Enter your take-home salary to see your targets.</p>
-            <fieldset class="period-control"><legend class="sr-only">Salary period</legend><label><input type="radio" name="period" value="monthly" checked><span>Monthly</span></label><label><input type="radio" name="period" value="annual"><span>Annual</span></label></fieldset>
-            <label class="field-label" for="salary"><span id="salary-label">Monthly take-home</span><span>INR</span></label><div class="number-field"><span aria-hidden="true">₹</span><input id="salary" type="number" inputmode="decimal" min="1" max="10000000000" step="any" placeholder="e.g. 1,00,000" aria-describedby="salary-error salary-equivalent"></div><p class="field-error" id="salary-error"></p><p class="equivalent" id="salary-equivalent">Your annual salary will appear here.</p>
-            <div class="input-divider"></div><label class="switch-row" for="home-loan"><span><strong>Have a home loan?</strong><small>Adjusts your total EMI ceiling</small></span><input type="checkbox" id="home-loan" role="switch"><span class="switch" aria-hidden="true"></span></label>
-            <div class="input-note"><span aria-hidden="true">↳</span><p>Your salary stays in your browser.<br>No accounts. No uploads.</p></div>
-          </aside>
-          <div class="results" id="finance-results" aria-label="Finance targets"></div>
-        </div><p class="section-note">A compass, not a promise. These are your formula-based planning targets; the independence number does not guarantee you can retire. Rent and EMI ceilings are separate limits, not a complete budget.</p>
-      </section>
-      <section id="panel-fitness" class="panel" role="tabpanel" aria-labelledby="tab-fitness" hidden>
-        <div class="section-heading"><div><p class="eyebrow">02 / HEALTH & ENERGY</p><h2>Build a stronger everyday.</h2></div><p>Simple daily targets.<br>Progress at your own pace.</p></div>
-        <div class="calculator-layout"><aside class="input-card"><span class="card-kicker">THE STARTING POINT</span><h3>Start where you are.</h3><p class="muted">Enter your body weight for a snapshot of your daily targets.</p><label class="field-label weight-label" for="weight"><span>Body weight</span><span>KG</span></label><div class="number-field"><input id="weight" type="number" inputmode="decimal" min="1" max="500" step="any" placeholder="e.g. 70" aria-describedby="weight-error"><span aria-hidden="true">kg</span></div><p class="field-error" id="weight-error"></p><div class="fitness-mantra"><span aria-hidden="true">✳</span><p>Consistency<br>over perfection.</p></div><div class="input-note"><span aria-hidden="true">↳</span><p>A starting point for your routine.<br>Adjust to your individual needs.</p></div></aside><div class="results" id="fitness-results" aria-label="Fitness targets"></div></div><p class="section-note">Estimates, not a personalized prescription. Weight alone cannot establish calorie or hydration needs. The weekly weight-loss range is a formula output, not a guaranteed or universally suitable pace.</p>
-      </section>
-      <p class="print-date" id="print-date"></p>
-      <noscript><p>Please enable JavaScript to calculate and save your targets.</p></noscript>
-    </main>
-    <footer><p>Made for a more intentional life.<span class="footer-dot">·</span><span>Personal by design.</span></p><button class="text-button" id="reset" type="button">Reset saved data <span aria-hidden="true">↺</span></button></footer>
-  </div>
-  <dialog id="reset-dialog"><form method="dialog"><p class="eyebrow">A FRESH START</p><h2>Reset your numbers?</h2><p>This removes your saved salary, weight, and preferences from this browser.</p><div class="dialog-actions"><button class="button" value="cancel">Keep my data</button><button class="button primary" value="reset">Reset data</button></div></form></dialog>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f7f2" />
+    <meta
+      name="description"
+      content="A little clarity for your money and your health. Simple finance and fitness calculators, saved on your device."
+    />
+    <title>LifeTracker — Make room for a better everyday</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="masthead">
+        <a class="brand" href="./" aria-label="LifeTracker home"
+          ><span class="brand-mark" aria-hidden="true">↗</span>LifeTracker<span
+            class="brand-dot"
+            >.</span
+          ></a
+        >
+        <div class="header-actions">
+          <span class="local-status" id="save-status" role="status"
+            >Stored only on this device</span
+          ><button class="button print-button" id="print" type="button">
+            <span aria-hidden="true">↗</span> Print / Save PDF
+          </button>
+        </div>
+      </header>
+      <main>
+        <div class="intro">
+          <div>
+            <p class="eyebrow">LESS GUESSWORK. MORE LIVING.</p>
+            <h1>A little clarity.<br /><span>A better everyday.</span></h1>
+            <p class="intro-copy">
+              Know your numbers. Make space for what matters.
+            </p>
+          </div>
+          <div class="intro-note">
+            <span class="tiny-spark" aria-hidden="true">✳</span>
+            <p>Small steps today.<br />More freedom tomorrow.</p>
+          </div>
+        </div>
+        <nav class="workspace-bar" aria-label="Calculator sections">
+          <div class="tabs" role="tablist" aria-label="LifeTracker calculators">
+            <button
+              id="tab-finance"
+              class="tab"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="panel-finance"
+              data-tab="finance"
+            >
+              <span aria-hidden="true">↗</span> Finance</button
+            ><button
+              id="tab-fitness"
+              class="tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-fitness"
+              tabindex="-1"
+              data-tab="fitness"
+            >
+              <span aria-hidden="true">♡</span> Fitness
+            </button>
+          </div>
+          <span class="workspace-caption"
+            >YOUR LIFE, A LITTLE MORE INTENTIONAL</span
+          >
+        </nav>
+        <section
+          id="panel-finance"
+          class="panel"
+          role="tabpanel"
+          aria-labelledby="tab-finance"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">01 / MONEY & FREEDOM</p>
+              <h2>Give your money a direction.</h2>
+            </div>
+            <p>A few simple numbers.<br />A clearer picture of your future.</p>
+          </div>
+          <div class="calculator-layout">
+            <aside class="input-card">
+              <span class="card-kicker">THE STARTING POINT</span>
+              <h3>What comes in?</h3>
+              <p class="muted">
+                Enter your take-home salary to see your targets.
+              </p>
+              <fieldset class="period-control">
+                <legend class="sr-only">Salary period</legend>
+                <label
+                  ><input
+                    type="radio"
+                    name="period"
+                    value="monthly"
+                    checked
+                  /><span>Monthly</span></label
+                ><label
+                  ><input type="radio" name="period" value="annual" /><span
+                    >Annual</span
+                  ></label
+                >
+              </fieldset>
+              <label class="field-label" for="salary"
+                ><span id="salary-label">Monthly take-home</span
+                ><span>INR</span></label
+              >
+              <div class="number-field">
+                <span aria-hidden="true">₹</span
+                ><input
+                  id="salary"
+                  type="number"
+                  inputmode="decimal"
+                  min="1"
+                  max="10000000000"
+                  step="any"
+                  placeholder="e.g. 1,00,000"
+                  aria-describedby="salary-error salary-equivalent"
+                />
+              </div>
+              <p class="field-error" id="salary-error"></p>
+              <p class="equivalent" id="salary-equivalent">
+                Your annual salary will appear here.
+              </p>
+              <div class="input-divider"></div>
+              <label class="switch-row" for="home-loan"
+                ><span
+                  ><strong>Have a home loan?</strong
+                  ><small>Adjusts your total EMI ceiling</small></span
+                ><input type="checkbox" id="home-loan" role="switch" /><span
+                  class="switch"
+                  aria-hidden="true"
+                ></span
+              ></label>
+              <div class="input-note">
+                <span aria-hidden="true">↳</span>
+                <p>
+                  Your salary stays in your browser.<br />No accounts. No
+                  uploads.
+                </p>
+              </div>
+            </aside>
+            <div
+              class="results"
+              id="finance-results"
+              aria-label="Finance targets"
+            ></div>
+          </div>
+          <p class="section-note">
+            A compass, not a promise. These are your formula-based planning
+            targets; the independence number does not guarantee you can retire.
+            Rent and EMI ceilings are separate limits, not a complete budget.
+          </p>
+        </section>
+        <section
+          id="panel-fitness"
+          class="panel"
+          role="tabpanel"
+          aria-labelledby="tab-fitness"
+          hidden
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">02 / HEALTH & ENERGY</p>
+              <h2>Build a stronger everyday.</h2>
+            </div>
+            <p>Simple daily targets.<br />Progress at your own pace.</p>
+          </div>
+          <div class="calculator-layout">
+            <aside class="input-card">
+              <span class="card-kicker">THE STARTING POINT</span>
+              <h3>Start where you are.</h3>
+              <p class="muted">
+                Enter your body weight for a snapshot of your daily targets.
+              </p>
+              <label class="field-label weight-label" for="weight"
+                ><span>Body weight</span><span>KG</span></label
+              >
+              <div class="number-field">
+                <input
+                  id="weight"
+                  type="number"
+                  inputmode="decimal"
+                  min="1"
+                  max="500"
+                  step="any"
+                  placeholder="e.g. 70"
+                  aria-describedby="weight-error"
+                /><span aria-hidden="true">kg</span>
+              </div>
+              <p class="field-error" id="weight-error"></p>
+              <div class="fitness-mantra">
+                <span aria-hidden="true">✳</span>
+                <p>Consistency<br />over perfection.</p>
+              </div>
+              <div class="input-note">
+                <span aria-hidden="true">↳</span>
+                <p>
+                  A starting point for your routine.<br />Adjust to your
+                  individual needs.
+                </p>
+              </div>
+            </aside>
+            <div
+              class="results"
+              id="fitness-results"
+              aria-label="Fitness targets"
+            ></div>
+          </div>
+          <p class="section-note">
+            Estimates, not a personalized prescription. Weight alone cannot
+            establish calorie or hydration needs. The weekly weight-loss range
+            is a formula output, not a guaranteed or universally suitable pace.
+          </p>
+        </section>
+        <p class="print-date" id="print-date"></p>
+        <noscript
+          ><p>
+            Please enable JavaScript to calculate and save your targets.
+          </p></noscript
+        >
+      </main>
+      <footer>
+        <p>
+          Made for a more intentional life.<span class="footer-dot">·</span
+          ><span>Personal by design.</span>
+        </p>
+        <button class="text-button" id="reset" type="button">
+          Reset saved data <span aria-hidden="true">↺</span>
+        </button>
+      </footer>
+    </div>
+    <dialog id="reset-dialog">
+      <form method="dialog">
+        <p class="eyebrow">A FRESH START</p>
+        <h2>Reset your numbers?</h2>
+        <p>
+          This removes your saved salary, weight, and preferences from this
+          browser.
+        </p>
+        <div class="dialog-actions">
+          <button class="button" value="cancel">Keep my data</button
+          ><button class="button primary" value="reset">Reset data</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
 </html>
