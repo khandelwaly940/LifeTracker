@@ -1,10 +1,12 @@
+import { fitnessGoals } from "./features/fitness.js";
+
 // Versioned, namespaced persistence. Add migrations here when the schema changes.
 export const STORAGE_KEY = "lifetracker:state";
 export const defaults = () => ({
   version: 1,
   tab: "finance",
   finance: { salary: "", period: "monthly", homeLoan: false },
-  fitness: { weight: "" },
+  fitness: { weight: "", goal: "fat-loss", activity: "sedentary" },
 });
 function validInput(value, max) {
   return (
@@ -26,6 +28,10 @@ export function sanitizeState(data) {
   clean.finance.homeLoan = data.finance?.homeLoan === true;
   if (validInput(data.fitness?.weight, 500))
     clean.fitness.weight = data.fitness.weight;
+  if (Object.hasOwn(fitnessGoals, data.fitness?.goal))
+    clean.fitness.goal = data.fitness.goal;
+  clean.fitness.activity =
+    data.fitness?.activity === "moderate" ? "moderate" : "sedentary";
   return clean;
 }
 export function loadState() {

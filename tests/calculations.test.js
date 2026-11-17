@@ -17,7 +17,7 @@ test("finance targets for ₹1 lakh per month, with both loan scenarios", () => 
 test("fitness targets for 70 kg preserve fractional weekly estimates", () => {
   const result = calculateFitness(70);
   assert.equal(result.steps, 7000);
-  assert.deepEqual(result.calories, [1540, 1680]);
+  assert.deepEqual(result.calories, [1540, 1750]);
   assert.deepEqual(result.protein, [112, 154]);
   assert.equal(result.water, 2.8);
   assert.ok(Math.abs(result.loss[0] - 0.35) < 1e-10);
@@ -36,7 +36,7 @@ test("stored state is validated and unknown schema versions reset safely", () =>
     version: 1,
     tab: "fitness",
     finance: { salary: "100000", period: "annual", homeLoan: true },
-    fitness: { weight: "70.5" },
+    fitness: { weight: "70.5", goal: "fat-loss", activity: "sedentary" },
   };
   assert.deepEqual(sanitizeState(data), data);
   const bad = sanitizeState({
@@ -46,4 +46,31 @@ test("stored state is validated and unknown schema versions reset safely", () =>
     fitness: { weight: "Infinity" },
   });
   assert.deepEqual(bad, defaults());
+});
+
+test("calorie ranges follow all four goal and activity combinations", () => {
+  assert.deepEqual(calculateFitness(70, "fat-loss").calories, [1540, 1750]);
+  assert.deepEqual(
+    calculateFitness(70, "maintenance", "sedentary").calories,
+    [1820, 2030],
+  );
+  assert.deepEqual(
+    calculateFitness(70, "maintenance", "moderate").calories,
+    [2100, 2310],
+  );
+  assert.deepEqual(calculateFitness(70, "muscle-gain").calories, [2450, 2660]);
+});
+test("older saved profiles retain weight and gain default goal settings", () => {
+  const old = sanitizeState({ version: 1, fitness: { weight: "80" } });
+  assert.deepEqual(old.fitness, {
+    weight: "80",
+    goal: "fat-loss",
+    activity: "sedentary",
+  });
+  const saved = sanitizeState({
+    version: 1,
+    fitness: { weight: "80", goal: "maintenance", activity: "moderate" },
+  });
+  assert.equal(saved.fitness.goal, "maintenance");
+  assert.equal(saved.fitness.activity, "moderate");
 });

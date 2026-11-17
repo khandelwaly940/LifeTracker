@@ -1,5 +1,9 @@
 import { calculateFinance, financeMetrics } from "./features/finance.js";
-import { calculateFitness, fitnessMetrics } from "./features/fitness.js";
+import {
+  calculateFitness,
+  fitnessMetrics,
+  fitnessGoals,
+} from "./features/fitness.js";
 import { defaults, loadState, saveState, clearState } from "./storage.js";
 
 // Each feature owns its calculations and metric definitions. Register new sections here.
@@ -16,7 +20,12 @@ const features = {
   },
   fitness: {
     metrics: fitnessMetrics,
-    calculate: (state) => calculateFitness(Number(state.fitness.weight)),
+    calculate: (state) =>
+      calculateFitness(
+        Number(state.fitness.weight),
+        state.fitness.goal,
+        state.fitness.activity,
+      ),
   },
 };
 const $ = (selector) => document.querySelector(selector);
@@ -55,6 +64,9 @@ function renderResults() {
     const result = feature.calculate(state);
     for (const metric of feature.metrics) {
       const el = $(`#${name}-${metric.key}`);
+      el.closest("article").hidden = metric.visible
+        ? !metric.visible(state)
+        : false;
       el.textContent = result ? format(result[metric.key], metric.format) : "—";
       if (result && metric.unit) {
         const unit = document.createElement("span");
@@ -68,6 +80,11 @@ function renderResults() {
           : metric.formula;
     }
   }
+  $("#maintenance-activity").hidden = state.fitness.goal !== "maintenance";
+  $("#goal-context").textContent =
+    state.fitness.goal === "maintenance"
+      ? ""
+      : fitnessGoals[state.fitness.goal].activity;
   const annual = state.finance.period === "annual";
   $("#salary-label").textContent = `${annual ? "Annual" : "Monthly"} take-home`;
   $("#salary-equivalent").textContent = state.finance.salary
@@ -90,6 +107,8 @@ function persist() {
 function syncInputs() {
   $("#salary").value = state.finance.salary;
   $("#weight").value = state.fitness.weight;
+  $("#fitness-goal").value = state.fitness.goal;
+  $("#fitness-activity").value = state.fitness.activity;
   $(`[name="period"][value="${state.finance.period}"]`).checked = true;
   $("#home-loan").checked = state.finance.homeLoan;
 }
@@ -117,6 +136,16 @@ if (!loaded.available)
   $("#save-status").textContent = "Saved data unavailable · starting fresh";
 bindNumber("salary", "finance", "salary", 1e10);
 bindNumber("weight", "fitness", "weight", 500);
+for (const [id, key] of [
+  ["fitness-goal", "goal"],
+  ["fitness-activity", "activity"],
+]) {
+  $("#" + id).addEventListener("change", (event) => {
+    state.fitness[key] = event.target.value;
+    renderResults();
+    persist();
+  });
+}
 for (const input of document.querySelectorAll('[name="period"]'))
   input.addEventListener("change", () => {
     if (state.finance.salary)

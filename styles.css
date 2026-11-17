@@ -942,3 +942,34 @@ dialog p:not(.eyebrow) {
     font-size: 10px;
   }
 }
+
+.goal-fields {
+  margin-top: 24px;
+}
+.select-field {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 10px;
+  border: 1px solid #d8dfcf;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+}
+.select-field:focus-visible {
+  outline: 3px solid #769b5d;
+  outline-offset: 3px;
+}
+#maintenance-activity {
+  margin-top: 18px;
+}
+#goal-context:empty {
+  display: none;
+}
+@media print {
+  .select-field {
+    appearance: none;
+    font-size: 10px;
+  }
+}

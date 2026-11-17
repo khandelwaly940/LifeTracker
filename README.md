@@ -35,3 +35,7 @@ Print / Save PDF uses the browser's print dialog, with both calculator sections 
 ## Deployment
 
 `.github/workflows/pages.yml` tests every push to `main` and publishes only application assets to GitHub Pages. Enable Pages with **GitHub Actions** as the source. The repository must be named `LifeTracker` under `khandelwaly940`. The user-site domain `yashkhandelwal.me` is inherited; do not add a project CNAME or change the root site's DNS.
+
+## Fitness goals
+
+Calorie ranges use 22–25 kcal/kg for fat loss (sedentary to lightly active), 26–29 for sedentary maintenance, 30–33 for moderately active maintenance (3–5 workouts weekly), and 35–38 for muscle gain / daily training. The goal and maintenance activity selection persist alongside weight; existing saved profiles default to fat loss. The weekly weight-loss card appears only for fat loss. Other fitness formulas remain unchanged.

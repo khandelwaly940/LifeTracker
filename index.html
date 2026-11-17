@@ -170,6 +170,31 @@
                 /><span aria-hidden="true">kg</span>
               </div>
               <p class="field-error" id="weight-error"></p>
+              <div class="goal-fields">
+                <label class="field-label" for="fitness-goal">Your goal</label>
+                <select
+                  id="fitness-goal"
+                  class="select-field"
+                  aria-describedby="goal-context"
+                >
+                  <option value="fat-loss">Fat loss</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="muscle-gain">Muscle gain</option>
+                </select>
+                <p id="goal-context" class="equivalent"></p>
+                <div id="maintenance-activity" hidden>
+                  <label class="field-label" for="fitness-activity"
+                    >Activity level</label
+                  >
+                  <select id="fitness-activity" class="select-field">
+                    <option value="sedentary">Sedentary / desk job</option>
+                    <option value="moderate">Moderately active</option>
+                  </select>
+                  <p class="equivalent">
+                    Moderately active: 3–5 workouts / week
+                  </p>
+                </div>
+              </div>
               <div class="fitness-mantra">
                 <span aria-hidden="true">✳</span>
                 <p>Consistency<br />over perfection.</p>
