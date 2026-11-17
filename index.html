@@ -151,9 +151,7 @@
             <aside class="input-card">
               <span class="card-kicker">THE STARTING POINT</span>
               <h3>Start where you are.</h3>
-              <p class="muted">
-                Enter your body weight for a snapshot of your daily targets.
-              </p>
+              <p class="muted">Your measurements, routine, and goal.</p>
               <label class="field-label weight-label" for="weight"
                 ><span>Body weight</span><span>KG</span></label
               >
@@ -162,7 +160,7 @@
                   id="weight"
                   type="number"
                   inputmode="decimal"
-                  min="1"
+                  min="20"
                   max="500"
                   step="any"
                   placeholder="e.g. 70"
@@ -170,6 +168,76 @@
                 /><span aria-hidden="true">kg</span>
               </div>
               <p class="field-error" id="weight-error"></p>
+              <div class="measurement-grid">
+                <div>
+                  <label class="field-label" for="height"
+                    ><span>Height</span><span>CM</span></label
+                  >
+                  <div class="number-field">
+                    <input
+                      id="height"
+                      type="number"
+                      inputmode="decimal"
+                      min="100"
+                      max="250"
+                      step="any"
+                      placeholder="175"
+                      aria-describedby="height-error"
+                    />
+                  </div>
+                  <p class="field-error" id="height-error"></p>
+                </div>
+                <div>
+                  <label class="field-label" for="age"
+                    ><span>Age</span><span>YEARS</span></label
+                  >
+                  <div class="number-field">
+                    <input
+                      id="age"
+                      type="number"
+                      inputmode="numeric"
+                      min="18"
+                      max="100"
+                      step="1"
+                      placeholder="30"
+                      aria-describedby="age-error"
+                    />
+                  </div>
+                  <p class="field-error" id="age-error"></p>
+                </div>
+              </div>
+              <div class="goal-fields">
+                <label class="field-label" for="fitness-sex"
+                  >Sex used by the equation</label
+                >
+                <select id="fitness-sex" class="select-field">
+                  <option value="">Select</option>
+                  <option value="female">Female (−161)</option>
+                  <option value="male">Male (+5)</option>
+                </select>
+                <label class="pregnancy-option"
+                  ><input id="pregnancy" type="checkbox" /> Pregnant or
+                  breastfeeding</label
+                >
+              </div>
+              <div class="goal-fields">
+                <label class="field-label" for="fitness-activity"
+                  >Activity level</label
+                >
+                <select
+                  id="fitness-activity"
+                  class="select-field"
+                  aria-describedby="activity-context"
+                >
+                  <option value="">Select activity</option>
+                  <option value="sedentary">Sedentary</option>
+                  <option value="light">Lightly active</option>
+                  <option value="moderate">Moderately active</option>
+                  <option value="very">Very active</option>
+                  <option value="extra">Extremely active</option>
+                </select>
+                <p id="activity-context" class="equivalent"></p>
+              </div>
               <div class="goal-fields">
                 <label class="field-label" for="fitness-goal">Your goal</label>
                 <select
@@ -182,30 +250,95 @@
                   <option value="muscle-gain">Muscle gain</option>
                 </select>
                 <p id="goal-context" class="equivalent"></p>
-                <div id="maintenance-activity" hidden>
-                  <label class="field-label" for="fitness-activity"
-                    >Activity level</label
-                  >
-                  <select id="fitness-activity" class="select-field">
-                    <option value="sedentary">Sedentary / desk job</option>
-                    <option value="moderate">Moderately active</option>
-                  </select>
-                  <p class="equivalent">
-                    Moderately active: 3–5 workouts / week
-                  </p>
-                </div>
-              </div>
-              <div class="fitness-mantra">
-                <span aria-hidden="true">✳</span>
-                <p>Consistency<br />over perfection.</p>
               </div>
             </aside>
-            <div
-              class="results"
-              id="fitness-results"
-              aria-label="Fitness targets"
-            ></div>
+            <div class="fitness-output">
+              <p id="calorie-status" class="calorie-status" role="status"></p>
+              <div
+                class="results"
+                id="fitness-results"
+                aria-label="Fitness targets"
+              ></div>
+            </div>
           </div>
+          <details class="method-details">
+            <summary>How this is calculated · sources</summary>
+            <div>
+              <p>
+                <strong>Resting energy:</strong> 10 × weight (kg) + 6.25 ×
+                height (cm) − 5 × age (years), then +5 for the male equation or
+                −161 for the female equation.
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/2305711/"
+                  target="_blank"
+                  rel="noopener"
+                  >Mifflin–St Jeor study</a
+                >.
+              </p>
+              <p>
+                <strong>Daily maintenance:</strong> resting energy × an
+                approximate activity factor (1.2, 1.375, 1.55, 1.725, or 1.9).
+                These factors are separate from the original equation. Exercise
+                is already included; do not add workout calories again.
+                <a
+                  href="https://www.southkesteven.gov.uk/arts-leisure-and-culture/sports-and-leisure/health-hub/diet"
+                  target="_blank"
+                  rel="noopener"
+                  >Activity factors and goal adjustments</a
+                >.
+              </p>
+              <p>
+                <strong>Goal settings:</strong> fat loss starts at −500
+                kcal/day; muscle gain starts at +300 kcal/day; maintenance has
+                no adjustment. These are starting settings, not a prediction of
+                weight or muscle change.
+                <a
+                  href="https://www.nhs.uk/live-well/healthy-weight/managing-your-weight/healthy-ways-to-gain-weight/"
+                  target="_blank"
+                  rel="noopener"
+                  >NHS weight-gain guidance</a
+                >.
+              </p>
+              <p>
+                <strong>Scope:</strong> adult estimates, not measured
+                metabolism. Review your average weight trend over 2–4 weeks and
+                adjust. Pregnancy, breastfeeding, medical conditions and hormone
+                therapy may need an individual approach. Fat-loss targets are
+                withheld for BMI below 18.5. The app reduces the deficit at
+                1,200 kcal (female) or 1,500 kcal (male); these are conservative
+                software limits, not a guarantee of adequate nutrition.
+                <a
+                  href="https://onlinelibrary.wiley.com/doi/full/10.1002/oby.20660"
+                  target="_blank"
+                  rel="noopener"
+                  >Weight-management guideline</a
+                >.
+              </p>
+              <p>
+                <strong>Other targets:</strong> the protein range is for
+                resistance training (<a
+                  href="https://bjsm.bmj.com/content/52/6/376"
+                  target="_blank"
+                  rel="noopener"
+                  >research</a
+                >). Water is a general adult total from food and all beverages,
+                not an amount to drink on top of food (<a
+                  href="https://medlineplus.gov/ency/article/002471.htm"
+                  target="_blank"
+                  rel="noopener"
+                  >reference</a
+                >). Weekly movement follows
+                <a
+                  href="https://www.cdc.gov/physical-activity-basics/guidelines/adults.html"
+                  target="_blank"
+                  rel="noopener"
+                  >CDC guidance</a
+                >. The walking goal retains your original weight-based rule; it
+                is not a validated requirement. The old weekly weight-loss
+                prediction has been removed.
+              </p>
+            </div>
+          </details>
         </section>
         <p class="print-date" id="print-date"></p>
         <noscript
@@ -229,8 +362,8 @@
         <p class="eyebrow">A FRESH START</p>
         <h2>Reset your numbers?</h2>
         <p>
-          This removes your saved salary, weight, and preferences from this
-          browser.
+          This removes your saved salary, fitness profile, and preferences from
+          this browser.
         </p>
         <div class="dialog-actions">
           <button class="button" value="cancel">Keep my data</button

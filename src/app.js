@@ -2,7 +2,9 @@ import { calculateFinance, financeMetrics } from "./features/finance.js";
 import {
   calculateFitness,
   fitnessMetrics,
-  fitnessGoals,
+  activityLevels,
+  fitnessLimits,
+  validFitnessNumber,
 } from "./features/fitness.js";
 import { defaults, loadState, saveState, clearState } from "./storage.js";
 
@@ -20,12 +22,7 @@ const features = {
   },
   fitness: {
     metrics: fitnessMetrics,
-    calculate: (state) =>
-      calculateFitness(
-        Number(state.fitness.weight),
-        state.fitness.goal,
-        state.fitness.activity,
-      ),
+    calculate: (state) => calculateFitness(state.fitness),
   },
 };
 const $ = (selector) => document.querySelector(selector);
@@ -67,8 +64,11 @@ function renderResults() {
       el.closest("article").hidden = metric.visible
         ? !metric.visible(state)
         : false;
-      el.textContent = result ? format(result[metric.key], metric.format) : "—";
-      if (result && metric.unit) {
+      el.textContent =
+        result?.[metric.key] != null
+          ? format(result[metric.key], metric.format)
+          : "—";
+      if (result?.[metric.key] != null && metric.unit) {
         const unit = document.createElement("span");
         unit.className = "value-unit";
         unit.textContent = metric.unit;
@@ -80,11 +80,16 @@ function renderResults() {
           : metric.formula;
     }
   }
-  $("#maintenance-activity").hidden = state.fitness.goal !== "maintenance";
-  $("#goal-context").textContent =
-    state.fitness.goal === "maintenance"
-      ? ""
-      : fitnessGoals[state.fitness.goal].activity;
+  $("#activity-context").textContent =
+    activityLevels[state.fitness.activity]?.description ??
+    "Choose your overall routine, including work and exercise.";
+  $("#goal-context").textContent = {
+    "fat-loss": "Starts at maintenance − 500 kcal/day.",
+    maintenance: "Matches your estimated daily energy use.",
+    "muscle-gain":
+      "Starts at maintenance + 300 kcal/day; pair with resistance training.",
+  }[state.fitness.goal];
+  $("#calorie-status").textContent = calculateFitness(state.fitness).message;
   const annual = state.finance.period === "annual";
   $("#salary-label").textContent = `${annual ? "Annual" : "Monthly"} take-home`;
   $("#salary-equivalent").textContent = state.finance.salary
@@ -106,7 +111,10 @@ function persist() {
 }
 function syncInputs() {
   $("#salary").value = state.finance.salary;
-  $("#weight").value = state.fitness.weight;
+  for (const key of ["weight", "height", "age"])
+    $("#" + key).value = state.fitness[key];
+  $("#fitness-sex").value = state.fitness.sex;
+  $("#pregnancy").checked = state.fitness.pregnancy;
   $("#fitness-goal").value = state.fitness.goal;
   $("#fitness-activity").value = state.fitness.activity;
   $(`[name="period"][value="${state.finance.period}"]`).checked = true;
@@ -135,10 +143,31 @@ renderTab();
 if (!loaded.available)
   $("#save-status").textContent = "Saved data unavailable · starting fresh";
 bindNumber("salary", "finance", "salary", 1e10);
-bindNumber("weight", "fitness", "weight", 500);
+for (const key of ["weight", "height", "age"]) {
+  $("#" + key).addEventListener("input", (event) => {
+    const input = event.target;
+    const valid =
+      !input.validity.badInput &&
+      (input.value === "" || validFitnessNumber(input.value, key));
+    const limits = fitnessLimits[key];
+    input.setAttribute("aria-invalid", String(!valid));
+    $("#" + key + "-error").textContent = valid
+      ? ""
+      : `Enter ${limits.integer ? "a whole number" : "a number"} from ${limits.min} to ${limits.max}${key === "age" ? "; adults only" : ""}.`;
+    state.fitness[key] = valid ? input.value : "";
+    renderResults();
+    persist();
+  });
+}
+$("#pregnancy").addEventListener("change", (event) => {
+  state.fitness.pregnancy = event.target.checked;
+  renderResults();
+  persist();
+});
 for (const [id, key] of [
   ["fitness-goal", "goal"],
   ["fitness-activity", "activity"],
+  ["fitness-sex", "sex"],
 ]) {
   $("#" + id).addEventListener("change", (event) => {
     state.fitness[key] = event.target.value;
@@ -207,7 +236,7 @@ $("#reset-dialog").addEventListener("close", () => {
   syncInputs();
   renderResults();
   renderTab();
-  for (const id of ["salary", "weight"]) {
+  for (const id of ["salary", "weight", "height", "age"]) {
     $(`#${id}-error`).textContent = "";
     $(`#${id}`).removeAttribute("aria-invalid");
   }

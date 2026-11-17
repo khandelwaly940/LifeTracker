@@ -1,12 +1,24 @@
-import { fitnessGoals } from "./features/fitness.js";
+import {
+  fitnessGoals,
+  activityLevels,
+  validFitnessNumber,
+} from "./features/fitness.js";
 
 // Versioned, namespaced persistence. Add migrations here when the schema changes.
 export const STORAGE_KEY = "lifetracker:state";
 export const defaults = () => ({
-  version: 1,
+  version: 2,
   tab: "finance",
   finance: { salary: "", period: "monthly", homeLoan: false },
-  fitness: { weight: "", goal: "fat-loss", activity: "sedentary" },
+  fitness: {
+    weight: "",
+    height: "",
+    age: "",
+    sex: "",
+    goal: "maintenance",
+    activity: "",
+    pregnancy: false,
+  },
 });
 function validInput(value, max) {
   return (
@@ -19,19 +31,31 @@ function validInput(value, max) {
 }
 export function sanitizeState(data) {
   const clean = defaults();
-  if (data?.version !== 1) return clean;
+  if (![1, 2].includes(data?.version)) return clean;
   clean.tab = data.tab === "fitness" ? "fitness" : "finance";
   if (validInput(data.finance?.salary, 1e10))
     clean.finance.salary = data.finance.salary;
   clean.finance.period =
     data.finance?.period === "annual" ? "annual" : "monthly";
   clean.finance.homeLoan = data.finance?.homeLoan === true;
-  if (validInput(data.fitness?.weight, 500))
-    clean.fitness.weight = data.fitness.weight;
+  for (const key of ["weight", "height", "age"]) {
+    if (
+      typeof data.fitness?.[key] === "string" &&
+      validFitnessNumber(data.fitness[key], key)
+    )
+      clean.fitness[key] = data.fitness[key];
+  }
   if (Object.hasOwn(fitnessGoals, data.fitness?.goal))
     clean.fitness.goal = data.fitness.goal;
-  clean.fitness.activity =
-    data.fitness?.activity === "moderate" ? "moderate" : "sedentary";
+  // V1 only asked maintenance users for activity; other goals had implicit assumptions.
+  if (
+    (data.version === 2 || data.fitness?.goal === "maintenance") &&
+    Object.hasOwn(activityLevels, data.fitness?.activity)
+  )
+    clean.fitness.activity = data.fitness.activity;
+  if (["male", "female"].includes(data.fitness?.sex))
+    clean.fitness.sex = data.fitness.sex;
+  clean.fitness.pregnancy = data.fitness?.pregnancy === true;
   return clean;
 }
 export function loadState() {
