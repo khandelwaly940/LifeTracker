@@ -11,7 +11,7 @@ npm run dev
 npm test
 ```
 
-Open http://localhost:5173. No installation or build step is required. ES modules require serving over HTTP, rather than opening the HTML file directly.
+Open http://localhost:5173. No dependency installation is required. Local development is buildless; deployments run `npm run build`. ES modules require serving over HTTP, rather than opening the HTML file directly.
 
 ## Structure and extension points
 
@@ -34,7 +34,7 @@ Print / Save PDF uses the browser's print dialog, with both calculator sections 
 
 ## Deployment
 
-`.github/workflows/pages.yml` tests every push to `main` and publishes only application assets to GitHub Pages. Enable Pages with **GitHub Actions** as the source. The repository must be named `LifeTracker` under `khandelwaly940`. The user-site domain `yashkhandelwal.me` is inherited; do not add a project CNAME or change the root site's DNS.
+`.github/workflows/pages.yml` tests every push to `main` and publishes only application assets to GitHub Pages. The dependency-free build writes a content-addressed asset directory under `dist/`, including the complete JavaScript import graph. Any source change changes the release path, preventing browsers and CDNs from mixing cached JavaScript modules across deployments. Run `npm run build` to reproduce the deployed output locally. Enable Pages with **GitHub Actions** as the source. The repository must be named `LifeTracker` under `khandelwaly940`. The user-site domain `yashkhandelwal.me` is inherited; do not add a project CNAME or change the root site's DNS.
 
 ## Fitness model and evidence
 

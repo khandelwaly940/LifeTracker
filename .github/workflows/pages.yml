@@ -24,10 +24,7 @@ jobs:
       - run: npm test
       - uses: actions/configure-pages@v5
       - name: Prepare static site
-        run: |
-          mkdir dist
-          cp index.html styles.css favicon.svg dist/
-          cp -R src dist/src
+        run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
